@@ -1,6 +1,7 @@
 package com.qa;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -13,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class LoginDemo {
 
@@ -67,12 +69,10 @@ public class LoginDemo {
         wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//span[@id='spanMessage' and text()='Password cannot be empty']"))));
         driver.switchTo().defaultContent();
         driver.findElement(By.xpath("//div[@class='preview__actions']//span")).click();
-
-         if (driver.findElements(By.xpath("//div[@data-view='ctaHeader']")).size() < 1) {
-             System.out.println("Test is success!");
-         } else {
-             System.out.println("Test failed!");
-         }
+        // Custom wait using lambda
+        Predicate<WebDriver> isTextInTheElement
+                = webDriver -> webDriver.findElements(By.xpath("//div[@class='preview__actions']//span")).size() > 0;
+        Assert.assertFalse(isTextInTheElement.test(driver));
     }
 
     /**
